@@ -43,11 +43,7 @@ INSTALLED_APPS = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOWED_ORIGINS = [
-    "https://handigit-front-9uxvncf50-kartiks-projects-0b881d92.vercel.app"
-    "http://localhost:3000",
-    "http://127.0.0.1:5173",
-]
+CORS_ALLOWED_ORIGINS = ["https://handigit-front.vercel.app","http://127.0.0.1:5173"]
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
