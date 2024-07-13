@@ -17,15 +17,30 @@ def softmax(x):
     e_x = np.exp(x - np.max(x))
     return e_x / e_x.sum(axis=1, keepdims=True)
 
+
+
 def predict_digit(image_data):
     image_data = base64.b64decode(image_data.split(',')[1])
     image = Image.open(io.BytesIO(image_data)).convert('L')
     image = np.array(image)
     _, thresh_image = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
-    inverted_image = 255 - thresh_image
+    
+    contours, _ = cv2.findContours(thresh_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    if contours:
+        x, y, w, h = cv2.boundingRect(contours[0])
+        cropped_image = thresh_image[y:y+h, x:x+w]
+    else:
+        cropped_image = thresh_image
+    
+    # Invert colors and resize to 28x28
+    inverted_image = 255 - cropped_image
     resized_image = cv2.resize(inverted_image, (28, 28))
+    
+    # Normalize the image
     normalized_image = resized_image / 255.0
     final_image = 1 - normalized_image
+    
+    # Flatten the image
     flattened_image = final_image.reshape(1, -1)
     
     input_layer = flattened_image
